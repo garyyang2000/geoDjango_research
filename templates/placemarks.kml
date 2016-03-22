@@ -1,0 +1,9 @@
+{% extends "base.kml" %}
+{% block placemarks %}{% for place in places %}
+  <Placemark>
+    <name>{% if place.name %}{{ place.name }}{% else %}{{ place }}{% endif %}</name>
+    <area>{% if place.area %}{{ place.area}}{% else %}{{ place }}{% endif %}</area>
+    <pop2005>{% if place.pop2005 %}{{ place.pop2005}}{% else %}{{ place }}{% endif %}</pop2005>
+    <UNCode>{% if place.un %}{{ place.un}}{% else %}{{ place }}{% endif %}</UNCode>
+    {{ place.kml|safe }}
+  </Placemark>{% endfor %}{% endblock %}

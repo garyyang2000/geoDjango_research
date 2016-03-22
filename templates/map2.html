@@ -1,0 +1,83 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <script src="{% static 'world/OpenLayers.js' %}"></script>
+    <script src="{% static 'world/js/OpenStreetMap.js' %}"></script>
+<style>
+            #map-id {
+                width: 700px;
+                height: 350px;
+            }
+        </style>
+  </head>
+  <body>
+    Hi.  We found a total of {{location_count}} Locations.<br />
+
+  <div id="map-id"></div>
+        <script>
+          /* var map = new OpenLayers.Map({
+                div: "map-id",
+                layers: [
+                    new OpenLayers.Layer.WMS(
+                        "Global Imagery",
+                        "http://maps.opengeo.org/geowebcache/service/wms",
+                        {layers: "openstreetmap", format: "image/png"}
+                    ),
+
+                ],
+                center: new OpenLayers.LonLat(-112.169, 36.099),
+                zoom: 11
+            }); */
+           var map = new OpenLayers.Map("map-id");
+           map.addLayer(new OpenLayers.Layer.OSM());
+          /* var kmllayer= new OpenLayers.Layer.Vector("KML", {
+                            strategies: [new OpenLayers.Strategy.Fixed()],
+                            protocol: new OpenLayers.Protocol.HTTP({
+                                url: "../kml/",
+                                format: new OpenLayers.Format.KML({
+                                    extractStyles: true,
+                                    extractAttributes: true,
+                                    maxDepth: 2
+                                })
+                            })
+                        });*/
+                        var kmllayer = new OpenLayers.Layer.Vector("GML", {
+         strategies: [new OpenLayers.Strategy.Fixed()],
+         protocol: new OpenLayers.Protocol.HTTP({
+            url: "../gjson/",
+            format: new OpenLayers.Format.GeoJSON()
+         })
+     });
+             map.addLayer(kmllayer);
+            map.addControl(new OpenLayers.Control.OverviewMap());
+            //map.addControl(new OpenLayers.Control.Navigation());
+            //map.addControl(new OpenLayers.Control.Scale());
+            map.zoomToMaxExtent();
+            ///////////////////////////
+            var controls = {
+                selector: new OpenLayers.Control.SelectFeature(kmllayer, { onSelect: createPopup, onUnselect: destroyPopup })
+                };
+
+    function createPopup(feature) {
+      feature.popup = new OpenLayers.Popup.FramedCloud("pop",
+          feature.geometry.getBounds().getCenterLonLat(),
+          null,
+          '<div class="markerContent"><strong>Country</strong>:'+feature.attributes.name+'<br/><strong> Area</strong>:'+feature.attributes.area+'<br><strong> POP2005</strong> :'+feature.attributes.pop2005+'</div>',
+          null,
+          true,
+          function() { controls['selector'].unselectAll(); }
+      );
+      //feature.popup.closeOnMove = true;
+      map.addPopup(feature.popup);
+    }
+
+    function destroyPopup(feature) {
+      feature.popup.destroy();
+      feature.popup = null;
+    }
+
+    map.addControl(controls['selector']);
+    controls['selector'].activate();
+        </script>
+  </body>
+</html>

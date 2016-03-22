@@ -1,0 +1,13 @@
+<html>
+  <head>
+    {{ form.media }}
+  </head>
+  <body>
+   Hi.  There should be a total of {{location_count}} Locations.<br />
+    <form method="post" action="/some-url/">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <p><input type="submit" value="Submit"></p>
+    </form>
+  </body>
+</html>

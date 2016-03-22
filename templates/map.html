@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<style>
+            #map-id {
+                width: 700px;
+                height: 350px;
+            }
+        </style>
+  </head>
+  <body>
+    Hi.  There should be a total of {{location_count}} Locations.<br />
+
+  <div id="map-id"></div>
+        <script>
+            var map = new OpenLayers.Map("map-id");
+            var imagery = new OpenLayers.Layer.WMS(
+                "Global Imagery",
+                "http://maps.opengeo.org/geowebcache/service/wms",
+                {layers: "openstreetmap", format: "image/png"}
+            );
+            map.addLayer(imagery);
+
+            map.zoomToMaxExtent();
+        </script>
+  </body>
+</html>
